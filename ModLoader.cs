@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.PlayerLoop;
 
 namespace BepInEx.StationeerModLoader
 {
@@ -15,7 +16,7 @@ namespace BepInEx.StationeerModLoader
 
     public static class ModLoader
     {
-        private class ModDirSpec
+        public class ModDirSpec
         {
             public string baseDir;
             public string localDir;
@@ -25,13 +26,15 @@ namespace BepInEx.StationeerModLoader
 
         public static readonly List<Mod> Mods = new List<Mod>();
         private static readonly List<ModDirSpec> ModDirs = new List<ModDirSpec>();
-        public static string test = null;
+        public static string directory = null;
 
         public static void Init()
         {
             try
             {
+                ConfigFile.AttemptToLoad();
                 InitInternal();
+                UpdateFiles();
             }
             catch (Exception e)
             {
@@ -41,6 +44,10 @@ namespace BepInEx.StationeerModLoader
 
         private static void InitInternal()
         {
+            if(ConfigFile.AlloStationeersMods)
+                StationeerModLoader.Logger.LogInfo($"Set to Allow StationeersMod to load BepinEx Mods");
+            else
+                StationeerModLoader.Logger.LogInfo($"Set to not Allow StationeersMod to load BepinEx Mods");
             if (!InitPaths())
                 return;
             foreach (var dir in ModDirs)
@@ -49,7 +56,7 @@ namespace BepInEx.StationeerModLoader
             }
         }
 
-        private static void LoadFrom(ModDirSpec modDir)
+        public static void LoadFrom(ModDirSpec modDir)
         {
             var modsBaseDirFull = Path.GetFullPath(modDir.baseDir);
             if (!Directory.Exists(modsBaseDirFull))
@@ -97,6 +104,11 @@ namespace BepInEx.StationeerModLoader
             }
         }
 
+        public static void Update()
+        {
+            UpdateFiles();
+        }
+
         private static Assembly ResolveModDirectories(object sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name);
@@ -115,10 +127,11 @@ namespace BepInEx.StationeerModLoader
 
         public static void UpdateFiles()
         {
-            string dir = test;
+            string dir = directory;
             string[] filePaths = Directory.GetFiles(dir, "*", SearchOption.AllDirectories);
             if (!ConfigFile.AlloStationeersMods)
             {
+               // StationeerModLoader.Logger.LogInfo($"Set to not Allow StationeersMod to load BepinEx Mods");
                 foreach (var d in filePaths)
                 {
                     if (d.Contains("bepinex"))
@@ -126,20 +139,21 @@ namespace BepInEx.StationeerModLoader
                         if (!d.Contains("bepinexrenamed"))
                         {
                             File.Move(d, d + "renamed");
-                            StationeerModLoader.Logger.LogInfo("bepinex renamed to bepinexrenamed");
+                            StationeerModLoader.Logger.LogInfo($"bepinex renamed to bepinexrenamed for mod {dir}");
                         }
                     }
                 }
             }
             else
             {
+                //StationeerModLoader.Logger.LogInfo($"Set to Allow StationeersMod to load BepinEx Mods");
                 foreach (var d in filePaths)
                 {
                     if (d.Contains("bepinexrenamed"))
                     {
                         var replace = d.Replace("renamed", "");
                         File.Move(d, replace);
-                        StationeerModLoader.Logger.LogInfo("bepinexrenamed renamed to bepinex");
+                        StationeerModLoader.Logger.LogInfo($"bepinexrenamed renamed to bepinex for mod {dir}");
                     }
                 }
             }
@@ -148,15 +162,14 @@ namespace BepInEx.StationeerModLoader
         private static void AddMod(string dir)
         {
             // TODO: Maybe add support for MonoModLoader as well?
-            test = dir;
-            UpdateFiles();
+            directory = dir;
             var pluginsDir = Path.Combine(dir, "");
 
             var pluginsExists = Directory.Exists(pluginsDir);
 
             if (!pluginsExists)
                 return;
-
+            UpdateFiles();
             Mods.Add(new Mod
             {
                 PluginsPath = pluginsExists ? pluginsDir : null,

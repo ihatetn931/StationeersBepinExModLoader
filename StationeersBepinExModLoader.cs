@@ -8,7 +8,10 @@ namespace BepInEx.StationeerModLoader
     {
 
         public static readonly ManualLogSource Logger = Logging.Logger.CreateLogSource(nameof(StationeerModLoader));
-        public static ModPaths paths;
+        public static OldModPaths paths;
+        public const string Version = "1.0.1";
+        public const string WebUrl = "https://github.com/ihatetn931/StationeersBepinExModLoader";
+        public const string PatcherName = "BepinEx.StationeersModLoader";
 
         // Add dummy property to fulfil the preloader patcher contract
         public static IEnumerable<string> TargetDLls => new string[0];
@@ -22,7 +25,6 @@ namespace BepInEx.StationeerModLoader
         {
             // Hook chainloader only after preloader to not cause resolving on UnityEngine too soon
             ChainloaderHandler.Init();
-            ConfigFile.AttemptToLoad();
         }
 
         public static void Patch(AssemblyDefinition ass)
