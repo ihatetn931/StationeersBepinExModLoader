@@ -1,5 +1,7 @@
 # StationeersBepinExModLoader
 
+For This Patcher to work you Need BepinEx https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21
+
 This Mod Loader will allow you to load BepinEx Mods from the Steam Work Shop and also your Local Mod Folder that is in Documents.
 
 Just put the dll in your BepinEx/patchers folder
