@@ -12,7 +12,7 @@ If you also use StationeersMod https://github.com/jixxed/StationeersMods it is r
 
 This Patcher is a modified version of https://github.com/BepInEx/BepInEx.MultiFolderLoader to work with Stationeers
 
-Plans
+# Plans
 Make it so the list in the WorkShop menu also sets the load order for mods
 If mod is disable in the Workshop menu the Modloader will not load it.
 I might add where you can set each mod if it will load with stationeersmods or not so you can pick and choose which mod StationeersMods load and which mods my ModLoader will load
