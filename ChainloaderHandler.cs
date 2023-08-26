@@ -53,6 +53,7 @@ namespace BepInEx.StationeerModLoader
                 return;
 
             StationeerModLoader.Logger.LogInfo("Finding plugins from mods...");
+
             foreach (var pluginDir in ModLoader.GetPluginDirs())
             {
                 var result = TypeLoader.FindPluginTypes(pluginDir, typeSelector, assemblyFilter, cacheName);

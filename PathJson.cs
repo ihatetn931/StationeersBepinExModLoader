@@ -132,8 +132,7 @@ namespace BepInEx.StationeerModLoader
         {
             StationeersBepinExModLoader modsInfo = new StationeersBepinExModLoader
             {
-                StationeersModsLoadsBepinExMod = false
-
+                StationeersModsLoadsBepinExMod = false,
             };
             WriteToXmlFile<StationeersBepinExModLoader>(PathsConfigPath, modsInfo, true);
             AttemptToLoad();
@@ -147,8 +146,7 @@ namespace BepInEx.StationeerModLoader
             {
                 StationeersBepinExModLoader modsInfo = new StationeersBepinExModLoader
                 {
-                    StationeersModsLoadsBepinExMod = AllowStationeersMods
-
+                    StationeersModsLoadsBepinExMod = AllowStationeersMods,
                 };
                 WriteToXmlFile(PathsConfigPath, modsInfo, true);
                 AttemptToLoad();

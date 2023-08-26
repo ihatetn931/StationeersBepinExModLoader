@@ -25,14 +25,15 @@ namespace BepInEx.StationeerModLoader
         {
             try
             {
-                ConfigFile.AttemptToLoad();
-                if (ConfigFile.AllowStationeersMods)
-                    StationeerModLoader.Logger.LogInfo($"Set to Allow StationeersMod to load BepinEx Mods (BepinEx Mods Will Load Twice)");
-                else
-                    StationeerModLoader.Logger.LogInfo($"Set to not Allow StationeersMod to load BepinEx Mods");
-                InitInternal();
-                UpdateFiles();
-
+                if (ConfigFile.AttemptToLoad())
+                {
+                    if (ConfigFile.AllowStationeersMods)
+                        StationeerModLoader.Logger.LogInfo($"Set to Allow StationeersMod to load BepinEx Mods (BepinEx Mods Will Load Twice)");
+                    else
+                        StationeerModLoader.Logger.LogInfo($"Set to not Allow StationeersMod to load BepinEx Mods");
+                    InitInternal();
+                    UpdateFiles();
+                }
             }
 
             catch (Exception e)
@@ -47,14 +48,15 @@ namespace BepInEx.StationeerModLoader
             {
                 foreach (var dir in mConfig.Mods)
                 {
-                    LoadFrom(dir);
+                    if (!dir.IsCore)
+                        LoadFrom(dir);
                 }
             }
         }
 
         public static void LoadFrom(ModData modDir)
         {
-            if (modDir.LocalPath != "")
+            if (modDir.IsEnabled)
             {
                 var modsBaseDirFull = Path.GetFullPath(modDir.LocalPath);
                 if (!Directory.Exists(modsBaseDirFull))
@@ -62,12 +64,9 @@ namespace BepInEx.StationeerModLoader
                     StationeerModLoader.Logger.LogWarning("No Mod Folders Found in modconfig.xml");
                     return;
                 }
-                foreach (var dir in Directory.GetDirectories(modsBaseDirFull))
-                {
-                    var dirName = Path.GetFileName(dir);
-                    AddMod(modsBaseDirFull);
-                }
+                directory = modsBaseDirFull;
             }
+
             // Also resolve assemblies like bepin does
             AppDomain.CurrentDomain.AssemblyResolve += ResolveModDirectories;
         }
@@ -76,16 +75,16 @@ namespace BepInEx.StationeerModLoader
         {
             var name = new AssemblyName(args.Name);
 
-            foreach (var mod in Mods)
-                if (Utility.TryResolveDllAssembly(name, mod.ModDir, out var ass))
-                    return ass;
+            foreach (var mod in mConfig.Mods)
+                    if (Utility.TryResolveDllAssembly(name, mod.LocalPath, out var ass))
+                        return ass;
 
             return null;
         }
 
         public static IEnumerable<string> GetPluginDirs()
         {
-            return Mods.Select(m => m.PluginsPath).Where(s => s != null);
+            return mConfig.Mods.Select(m => m.LocalPath).Where(m => m != "");
         }
 
         //This Update the Files so StationeersMods https://github.com/jixxed/StationeersMods do not load BepinEx mods which is toggable in StationeersModLoader.xml in the game root
@@ -99,10 +98,10 @@ namespace BepInEx.StationeerModLoader
                 {
                     if (d.Contains("bepinex"))
                     {
-                        if (!d.Contains("bepinexrenamed"))
+                        if (!d.Contains("bepinexStationeersModsNoLoad"))
                         {
-                            File.Move(d, d + "renamed");
-                            StationeerModLoader.Logger.LogInfo($"bepinex renamed to bepinexrenamed for mod {dir}");
+                            File.Move(d, d + "StationeersModsNoLoad");
+                            StationeerModLoader.Logger.LogInfo($"bepinex renamed to bepinexStationeersModsNoLoad for mod {dir}");
                         }
                     }
                 }
@@ -111,35 +110,14 @@ namespace BepInEx.StationeerModLoader
             {
                 foreach (var d in filePaths)
                 {
-                    if (d.Contains("bepinexrenamed"))
+                    if (d.Contains("bepinexStationeersModsNoLoad"))
                     {
-                        var replace = d.Replace("renamed", "");
+                        var replace = d.Replace("StationeersModsNoLoad", "");
                         File.Move(d, replace);
-                        StationeerModLoader.Logger.LogInfo($"bepinexrenamed renamed to bepinex for mod {dir}");
+                        StationeerModLoader.Logger.LogInfo($"bepinexStationeersModsNoLoad renamed to bepinex for mod {dir}");
                     }
                 }
             }
-        }
-
-        //Add all Mods Found in modconfig.xml paths
-        private static void AddMod(string dir)
-        {
-            // TODO: Maybe add support for MonoModLoader as well?
-            directory = dir;
-            var pluginsDir = Path.Combine(dir, "");
-
-            var pluginsExists = Directory.Exists(pluginsDir);
-
-            if (!pluginsExists)
-                return;
-
-            UpdateFiles();
-
-            Mods.Add(new Mod
-            {
-                PluginsPath = pluginsExists ? pluginsDir : null,
-                ModDir = dir
-            });
         }
     }
 }
