@@ -1,46 +1,69 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Xml;
 using System.Xml.Serialization;
-
 namespace BepInEx.StationeerModLoader
 {
-    [Serializable]
-    public class ModInfo
+    public class StationeersBepinExModLoader
     {
         public bool StationeersModsLoadsBepinExMod { get; set; }
-        public ModPaths ModsPath { get; set; }
     }
-    [Serializable]
-    public class ModPaths
+    //Created my Own ModConfig Class to get modconfig.xml data
+    public class ModConfig
     {
-        public string WorkShopPath { get; set; }
-        public string LocalModPath { get; set; }
+        public List<ModData> Mods { get; set; } = new List<ModData>();
+    }
+    //Created my Own ModData Class to get modconfig.xml data
+    public class ModData
+    {
+        public ulong Id { get; set; }
+        public bool IsEnabled { get; set; }
+        public string LocalPath { get; set; }
+        public bool IsLocal
+        {
+            get
+            {
+                return this.Id == 0UL;
+            }
+        }
+        public bool IsCore
+        {
+            get
+            {
+                return this.Id == 1UL;
+            }
+        }
+        public bool IsWorkshop
+        {
+            get
+            {
+                return this.Id > 1UL;
+            }
+        }
+        public string AboutXmlPath
+        {
+            get
+            {
+                return this.LocalPath + "\\About\\About.xml";
+            }
+        }
     }
 
-    public class OldModPaths
+    public class ConfigFile
     {
-        public string WorkShopPath { get; set; }
-        public string LocalModPath { get; set; }
-        public bool StationeersModsLoadsBepinExMod { get; set; }
-    }
-
-    public static class ConfigFile
-    {
-        private static readonly string OldConfig = "../../StationeersModLoader.json";
+       //The ModConfig file where it reads all the mods folders
+        private static readonly string ModPathConfig = "../../modconfig.xml";
+        //ModLoader Settings that user can set by eding this xml file
         private static readonly string PathsConfig = "../../StationeersModLoader.xml";
-        private static readonly string WorkShopPath = @"workshop\content\544550";
-        private static readonly string LocalModPath = @"My Games\Stationeers\mods";
-
+        //Path Combines to get the folder the dll in then going to the game root
         public static string PathsConfigPath = Path.Combine(GetAssemblyDirectory, PathsConfig);
-        public static string OldConfigPath = Path.Combine(GetAssemblyDirectory, OldConfig);
-        public static string workshopPath = Path.Combine(Directory.GetParent(GetAssemblyDirectory).Parent.Parent.Parent.ToString(), WorkShopPath);
-        public static string localModPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), LocalModPath);
-        public static bool AlloStationeersMods = false;
+        public static string ModConfigPath = Path.Combine(GetAssemblyDirectory, ModPathConfig);
 
-        private static string GetAssemblyDirectory
+        //If true StationeersMods https://github.com/jixxed/StationeersMods will load BepinEx Mods Set in StationeersModLoader.xml
+        public static  bool AllowStationeersMods = false;
+
+        public static string GetAssemblyDirectory
         {
             get
             {
@@ -85,60 +108,46 @@ namespace BepInEx.StationeerModLoader
 
         public static bool AttemptToLoad()
         {
-
+            //Load modconfig.xml and sets it so modloader can get data from it
+            if (File.Exists(ModConfigPath))
+            { 
+                ModConfig modconfig = ReadFromXmlFile<ModConfig>(ModConfigPath);
+                ModLoader.mConfig = modconfig;
+            }
+            //Load StationeersModLoader.xml to get ModLoader Settings
             if (File.Exists(PathsConfigPath))
             {
-                var xml = ReadFromXmlFile<ModInfo>(PathsConfigPath);
-                workshopPath = xml.ModsPath.WorkShopPath;
-                localModPath = xml.ModsPath.LocalModPath;
-                AlloStationeersMods = xml.StationeersModsLoadsBepinExMod;
+                StationeersBepinExModLoader modLoaderConfig = ReadFromXmlFile<StationeersBepinExModLoader>(PathsConfigPath);
+                AllowStationeersMods = modLoaderConfig.StationeersModsLoadsBepinExMod;
             }
-            else
-            {
+            //if StationeersModLoader.xml does not exists this create the file (first time load)
+            if (!File.Exists(PathsConfigPath))
                 AttemptToCreate();
-            }
+
             return true;
         }
 
+        //Creates StationeersModLoader.xml and set the default value to false
         public static bool AttemptToCreate()
         {
-
-            if (!File.Exists(PathsConfigPath))
+            StationeersBepinExModLoader modsInfo = new StationeersBepinExModLoader
             {
-                ModPaths mods = new ModPaths
-                {
-                    WorkShopPath = workshopPath,
-                    LocalModPath = localModPath,
-                };
-                ModInfo modsInfo = new ModInfo
-                {
-                    ModsPath = mods,
-                    StationeersModsLoadsBepinExMod = false
+                StationeersModsLoadsBepinExMod = false
 
-                };
-                WriteToXmlFile<ModInfo>(PathsConfigPath, modsInfo, true);
-                AttemptToLoad();
-            }
-            else
-            {
-                AttemptToLoad();
-            }
+            };
+            WriteToXmlFile<StationeersBepinExModLoader>(PathsConfigPath, modsInfo, true);
+            AttemptToLoad();
             return true;
         }
 
-        public static bool AttemptToSave()
+        //Saves StationeersModLoader.xml but not used will be used in a later update
+        public bool AttemptToSave()
         {
             if (File.Exists(PathsConfigPath))
             {
-                ModPaths mods = new ModPaths
+                StationeersBepinExModLoader modsInfo = new StationeersBepinExModLoader
                 {
-                    WorkShopPath = workshopPath,
-                    LocalModPath = localModPath,
-                };
-                ModInfo modsInfo = new ModInfo
-                {
-                    ModsPath = mods,
-                    StationeersModsLoadsBepinExMod = AlloStationeersMods
+                    StationeersModsLoadsBepinExMod = AllowStationeersMods
 
                 };
                 WriteToXmlFile(PathsConfigPath, modsInfo, true);
@@ -146,7 +155,8 @@ namespace BepInEx.StationeerModLoader
             }
             else
             {
-                StationeerModLoader.Logger.LogError("[BepinEx Stationeers ModLoader] Cannot Find StationeersModPaths.json in the game root");
+                StationeerModLoader.Logger.LogError("[BepinEx Stationeers ModLoader] Cannot Find StationeersModPaths.xml in the game root Creating..");
+                AttemptToCreate();
             }
             return true;
         }
