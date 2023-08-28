@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using BepInEx.Bootstrap;
 using HarmonyLib;
@@ -53,15 +55,17 @@ namespace BepInEx.StationeerModLoader
                 return;
 
             StationeerModLoader.Logger.LogInfo("Finding plugins from mods...");
-
             foreach (var pluginDir in ModLoader.GetPluginDirs())
             {
-                var result = TypeLoader.FindPluginTypes(pluginDir, typeSelector, assemblyFilter, cacheName);
+                //checks if any mods are set to load with StationeersMods and removes them from the BepinEx ChainLoader and allows StationeersMods to load them
+                if (!File.Exists(pluginDir + "\\About\\bepinex"))
+                {
+                    var result = TypeLoader.FindPluginTypes(pluginDir, typeSelector, assemblyFilter, cacheName);
 
-                foreach (var kv in result)
-                    __result[kv.Key] = kv.Value;
+                    foreach (var kv in result)
+                        __result[kv.Key] = kv.Value;
+                }
             }
-
             shouldSaveCache = true;
             if (cacheName != null)
                 TypeLoader.SaveAssemblyCache(cacheName, __result);
