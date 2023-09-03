@@ -1,241 +1,217 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
 
 namespace BepInEx.StationeerModLoader
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class StationeerModLoaderSettings
-    {
-        //public bool StationeersModsLoadsBepinExMod { get; set; }
-        public List<ModsLoaded> LoadedMods { get; set; } = new List<ModsLoaded>();
-    }
-    public class ModsLoaded
-    {
-        public string ModName { get; set; }
-        public bool LoadWithStationeersMod { get; set; }
-        public string ModPath { get; set; }
-    }
-    //Created my Own ModConfig Class to get modconfig.xml data
-    public class ModConfig
-    {
-        public List<ModData> Mods { get; set; } = new List<ModData>();
-    }
-
-    [XmlRoot("ModMetadata")]
-    public class ModAbout
-    {
-
-        public const string ROOT_NAME = "ModMetadata";
-
-        [XmlElement]
-        public string Name;
-
-        [XmlElement]
-        public string Author;
-
-        [XmlElement]
-        public string Version;
-
-        [XmlElement]
-        public string Description;
-
-        [XmlElement]
-        public ulong WorkshopHandle;
-
-        [XmlArray("Tags")]
-        [XmlArrayItem("Tag")]
-        public List<string> Tags;
-
-        [XmlIgnore]
-        public bool IsValid = true;
-    }
-
-    //Created my Own ModData Class to get modconfig.xml data
-    public class ModData
-    {
-        public ulong Id { get; set; }
-        public bool IsEnabled { get; set; }
-        public string LocalPath { get; set; }
-        public bool IsLocal
-        {
-            get
-            {
-                return this.Id == 0UL;
-            }
-        }
-        public bool IsCore
-        {
-            get
-            {
-                return this.Id == 1UL;
-            }
-        }
-        public bool IsWorkshop
-        {
-            get
-            {
-                return this.Id > 1UL;
-            }
-        }
-        public string AboutXmlPath
-        {
-            get
-            {
-                return this.LocalPath + "\\About\\About.xml";
-            }
-        }
-    }
-
     public class ConfigFile
     {
-       //The ModConfig file where it reads all the mods folders
         private static readonly string ModPathConfig = "../../modconfig.xml";
-        //ModLoader Settings File use this toggle if mods load with StationersMod or this ModLoader
         private static readonly string PathsConfig = "../../ModLoaderSettings.xml";
-        //Path combines for modconfig.xml and ModLoaderSettings.xml
-        public static string PathsConfigPath = Path.Combine(GetAssemblyDirectory, PathsConfig);
-        public static string ModConfigPath = Path.Combine(GetAssemblyDirectory, ModPathConfig);
-
-        //Mods Loaded with bepinex files
-        public static List<ModsLoaded> mloaded = new List<ModsLoaded>();
+        public static string PathsConfigPath = Path.Combine(ConfigFile.GetAssemblyDirectory, ConfigFile.PathsConfig);
+        public static string ModConfigPath = Path.Combine(ConfigFile.GetAssemblyDirectory, ConfigFile.ModPathConfig);
+        public static List<ModData> moddata = new List<ModData>();
+        public static List<Mod> modsloaded = new List<Mod>();
 
         public static string GetAssemblyDirectory
         {
             get
             {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
-                return Path.GetDirectoryName(path);
+                return Path.GetDirectoryName(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path));
             }
         }
 
-        //For writing ModLoaderSettings.xml on first load
-        public static void WriteToXmlFile<T>(string filePath, T objectToWrite, bool append = false) where T : new()
+        public static void WriteToXmlFile<T>(string filePath, T objectToWrite,XmlSerializerNamespaces nameSpace, bool append = false) where T : new()
         {
-            TextWriter writer = null;
+            TextWriter textWriter = null;
             try
             {
-                var serializer = new XmlSerializer(typeof(T));
-                writer = new StreamWriter(filePath, append);
-                serializer.Serialize(writer, objectToWrite);
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+                textWriter = new StreamWriter(filePath, append);
+                xmlSerializer.Serialize(textWriter, objectToWrite,nameSpace);
             }
             finally
             {
-                if (writer != null)
-                    writer.Close();
-            }
-        }
-
-        //For reading ModLoaderSettings.xml and modconfig.xml to get the current mod info
-        public static T ReadFromXmlFile<T>(string filePath) where T : new()
-        {
-            TextReader reader = null;
-            try
-            {
-                var serializer = new XmlSerializer(typeof(T));
-                reader = new StreamReader(filePath);
-                return (T)serializer.Deserialize(reader);
-            }
-            finally
-            {
-                if (reader != null)
-                    reader.Close();
-            }
-        }
-
-        //Loads all the xml files so they can be used
-        public static bool AttemptToLoad()
-        {
-            ModConfig modconfig = null;
-            //Load modconfig.xml and sets it so modloader can get data from it
-            if (File.Exists(ModConfigPath))
-            {
-                //ModLoader.mConfig.Mods.Clear();
-                modconfig = ReadFromXmlFile<ModConfig>(ModConfigPath);
-                ModLoader.mConfig = modconfig;
-            }
-            //Load ModLoaderSettings.xml to get ModLoader Settings
-            if (File.Exists(PathsConfigPath))
-            {
-                StationeerModLoaderSettings modLoaderConfig = ReadFromXmlFile<StationeerModLoaderSettings>(PathsConfigPath);
-                mloaded = modLoaderConfig.LoadedMods;
-                if (ModLoader.mConfig != null && modLoaderConfig.LoadedMods != null)
+                if (textWriter != null)
                 {
-                   ModLoader.UpdateFiles(modconfig.Mods,modLoaderConfig.LoadedMods);
+                    textWriter.Close();
                 }
             }
-            //if ModLoaderSettings.xml does not exists this create the file (first time load)
-            if (!File.Exists(PathsConfigPath))
+        }
+
+
+        public static T ReadFromXmlFile<T>(string filePath) where T : new()
+        {
+            TextReader textReader = null;
+            T result;
+            try
             {
-                AttemptToCreate();
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+                textReader = new StreamReader(filePath);
+                result = (T)((object)xmlSerializer.Deserialize(textReader));
+            }
+            finally
+            {
+                if (textReader != null)
+                {
+                    textReader.Close();
+                }
+            }
+            return result;
+        }
+
+
+        public static bool AttemptToLoadModConfig()
+        {
+            if (File.Exists(ConfigFile.ModConfigPath))
+            {
+                moddata.Clear();
+                var test = RemoveNonBepinExMods( XmlSerialization.Deserialize<ModConfig>(ModConfigPath, "ModConfig"));
+                foreach (var t in test.Mods)
+                    if (!t.IsCore)
+                        moddata.Add(t);
+            }
+            if (File.Exists(ConfigFile.PathsConfigPath))
+            {
+                ConfigFile.AttemptToLoadSettings();
+            }
+            else
+            {
+                ConfigFile.AttemptToCreate();
             }
 
             return true;
         }
 
-        //Creates ModLoaderSettings.xml and sets the default value to false
-        public static bool AttemptToCreate()
+        public static bool CheckForRemovedMods(BepinExMods modData)
         {
-            if (ModLoader.mConfig != null)
+            foreach (var loaded in modData.Mod.ToList())
             {
-                foreach (var config in ModLoader.mConfig.Mods)
+                if (!File.Exists(Path.Combine(loaded.ModPath, loaded.ModPath + "\\About\\About.xml")))
                 {
-                    if (!config.IsCore)
+                    modsloaded.Remove(loaded);
+                    StationeerModLoader.Logger.LogInfo($"Removed Mod {loaded.ModName} from ModLoaderSettings.xml");
+                }
+
+            }
+            return true;
+        }
+
+
+        public static bool AttemptToLoadSettings()
+        {
+            if (File.Exists(ConfigFile.PathsConfigPath))
+            {
+                modsloaded.Clear();
+                var modData = XmlSerialization.Deserialize<BepinExMods>(PathsConfigPath, "BepinExMods");
+                if (CheckForRemovedMods(modData))
+                {
+                    foreach (var data in moddata)
                     {
-                        var aboutfile = Path.Combine(config.LocalPath, config.AboutXmlPath);
-                        var test = ConfigFile.ReadFromXmlFile<ModAbout>(aboutfile);
-                        string[] filePaths = Directory.GetFiles(config.LocalPath, "*", SearchOption.AllDirectories);
-                        foreach (var fp in filePaths)
+                        var match = modData.Mod.FirstOrDefault(stringToCheck => stringToCheck.ModPath.Contains(data.LocalPath));
+                        if (match != null)
                         {
-                            if (fp.Contains("bepinexStationeersModsNoLoad") || fp.Contains("bepinex"))
+                            Mod modadded = new Mod
                             {
-                                ///Mods Loaded with BepinEx files
-                                ModsLoaded modsInfo = new ModsLoaded
-                                {
-                                    LoadWithStationeersMod = false,
-                                    ModName = test.Name,
-                                    ModPath = config.LocalPath
-                                };
-                                mloaded.Add(modsInfo);
-                                StationeerModLoaderSettings mloader = new StationeerModLoaderSettings
-                                {
-                                    LoadedMods = mloaded
-                                };
-                                WriteToXmlFile<StationeerModLoaderSettings>(PathsConfigPath, mloader, false);
-                            }
+                                ModName = match.ModName,
+                                ModPath = match.ModPath,
+                                LoadWithStationeersMod = match.LoadWithStationeersMod,
+                                IsEnabled = data.IsEnabled,
+                                WorkshopId = GetModAbout(data.LocalPath, data.AboutXmlPath).WorkshopHandle
+                            };
+
+                            modsloaded.Add(modadded);
+
+                            BepinExMods bepinmod = new BepinExMods
+                            {
+                                Mod = modsloaded
+                            };
+                            StationeerModLoader.Logger.LogInfo($"Added Mod {modadded.ModName} from ModLoaderSettings.xml");
+                            ModLoader.UpdateFiles(moddata, modsloaded);
+                            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                            ns.Add("", "");
+                            WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod, ns, false);
+                        }
+                        else
+                        {
+                            Mod mod = new Mod
+                            {
+                                ModName = GetModAbout(data.LocalPath, data.AboutXmlPath).Name,
+                                LoadWithStationeersMod = false,
+                                WorkshopId = GetModAbout(data.LocalPath, data.AboutXmlPath).WorkshopHandle,
+                                IsEnabled = data.IsEnabled,
+                                ModPath = data.LocalPath
+                            };
+                            StationeerModLoader.Logger.LogInfo($"Added Mod {mod.ModName} modconfig.xml");
+                            modsloaded.Add(mod);
+                            BepinExMods bepinmod = new BepinExMods
+                            {
+                                Mod = modsloaded
+                            };
+                            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                            ns.Add("", "");
+                            WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod, ns, false);
                         }
                     }
                 }
             }
-            AttemptToLoad();
             return true;
         }
 
-        //Saves StationeersModLoader.xml but not used will be used in a later update
-        /* public static bool AttemptToSave( List<ModsLoaded> modsLoaded)
-         {
-             if (File.Exists(PathsConfigPath))
-             {
-                 StationeerModLoaderSettings modsInfo = new StationeerModLoaderSettings
-                 {
-                     LoadedMods = modsLoaded
-                 };
-                 mloaded = modsLoaded;
-                 WriteToXmlFile<StationeerModLoaderSettings>(PathsConfigPath, modsInfo, false);
-                 AttemptToLoad();
-             }
-             else
-             {
-                 StationeerModLoader.Logger.LogError("[BepinEx Stationeers ModLoader] Cannot Find ModLoaderSettings.xml in the game root Creating..");
-                 AttemptToCreate();
-             }
-             return true;
-         }*/
+        public static ModConfig RemoveNonBepinExMods(ModConfig mconfig)
+        {
+            if (mconfig != null)
+            {
+                foreach (ModData modData in mconfig.Mods.ToList<ModData>())
+                {
+                    if (modData != null)
+                    {
+                        if (!modData.IsCore && File.Exists(modData.LocalPath + "\\About\\stationeersmods"))
+                        {
+                            mconfig.Mods.Remove(modData);
+                        }
+                    }
+                }
+            }
+            return mconfig;
+        }
+
+        public static ModAbout GetModAbout(string modpath , string aboutpath)
+        {
+            ModAbout modAbout = ConfigFile.ReadFromXmlFile<ModAbout>(Path.Combine(modpath,aboutpath));
+            return modAbout;
+        }
+
+        public static bool AttemptToCreate()
+        {
+;            if (moddata != null)
+            {
+                XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
+                foreach (var data in moddata)
+                {
+                    Mod mod = new Mod
+                    {
+                        ModName = GetModAbout(data.LocalPath, data.AboutXmlPath).Name,
+                        LoadWithStationeersMod = false,
+                        WorkshopId = GetModAbout(data.LocalPath, data.AboutXmlPath).WorkshopHandle,
+                        IsEnabled = data.IsEnabled,
+                        ModPath = data.LocalPath
+                    };
+                    modsloaded.Add(mod);
+                    BepinExMods bepinmod = new BepinExMods
+                    {
+                        Mod = modsloaded
+                    };
+                    WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod,ns, false);
+                }
+            }
+            return true;
+        }
     }
 }
+
+

@@ -73,10 +73,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChainloaderHandler.cs" />
-    <Compile Include="XMLHandling.cs" />
+    <Compile Include="BepinExMods.cs" />
+    <Compile Include="ModAbout.cs" />
+    <Compile Include="ModConfig.cs" />
     <Compile Include="StationeerModLoader.cs" />
     <Compile Include="ModLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XMLHandling.cs" />
+    <Compile Include="XMLSerial.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

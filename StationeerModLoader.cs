@@ -1,7 +1,5 @@
 ﻿using BepInEx.Logging;
-using HarmonyLib;
 using Mono.Cecil;
-using System;
 using System.Collections.Generic;
 
 namespace BepInEx.StationeerModLoader
@@ -18,7 +16,8 @@ namespace BepInEx.StationeerModLoader
         //preloader patcher Initialize
         public static void Initialize()
         {
-            ModLoader.Init();
+            if(ConfigFile.AttemptToLoadModConfig())
+                ModLoader.Init();
         }
         //preloader patcher Finish
         public static void Finish()
