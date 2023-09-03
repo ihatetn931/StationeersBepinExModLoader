@@ -6,7 +6,7 @@ You also need to Open up the WorkShop Menu Atlease once so it creates a modconfi
 
 <img src="https://github.com/ihatetn931/StationeersBepinExModLoader/assets/2037352/52c0f1c0-4e46-4412-9b8d-b08cf65e84cc" width="150" height="100">
 
-<img src="https://github.com/ihatetn931/StationeersBepinExModLoader/assets/2037352/92c7560d-9f76-4535-ba06-7461264cabe9" width="50" height="50">
+<img src="https://github.com/ihatetn931/StationeersBepinExModLoader/assets/2037352/92c7560d-9f76-4535-ba06-7461264cabe9" width="200" height="300">
 
 
 This Mod Loader will allow you to load BepinEx Mods from the Steam Work Shop and also your Local Mod Folder that is in Documents.
