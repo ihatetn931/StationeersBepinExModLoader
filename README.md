@@ -23,37 +23,14 @@ This Patcher is a modified version of https://github.com/BepInEx/BepInEx.MultiFo
 
 The Config
 ModLoaderSettings.xml
+This is a example of what the ModLoaded Creates for the mods it detects
 ```xml
 <BepinExMods>
-  <Mod LoadWithStationeersMod="false">
-    <ModName>BetterDeepMiner</ModName>
-    <WorkshopId>3021383272</WorkshopId>
-    <IsEnabled>true</IsEnabled>
-    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\BetterDeepMiner</ModPath>
-  </Mod>
-  <Mod LoadWithStationeersMod="false">
-    <ModName>ColoredGasses</ModName>
-    <WorkshopId>3021353906</WorkshopId>
-    <IsEnabled>true</IsEnabled>
-    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ColoredGasses</ModPath>
-  </Mod>
-  <Mod LoadWithStationeersMod="false">
-    <ModName>SeasonsAndWeather</ModName>
-    <WorkshopId>2948870051</WorkshopId>
-    <IsEnabled>true</IsEnabled>
-    <ModPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\544550\2948870051</ModPath>
-  </Mod>
-  <Mod LoadWithStationeersMod="false">
-    <ModName>Deadly Toxins [StationeersMods]</ModName>
-    <WorkshopId>3004378085</WorkshopId>
-    <IsEnabled>true</IsEnabled>
-    <ModPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\544550\3004378085</ModPath>
-  </Mod>
-  <Mod LoadWithStationeersMod="false">
-    <ModName>ConfigurationManager</ModName>
-    <WorkshopId>3017371375</WorkshopId>
-    <IsEnabled>true</IsEnabled>
-    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ConfigurationManager</ModPath>
+  <Mod LoadWithStationeersMod="false"> <!--- Change this if you want StationeersMods to load this Mod --->
+    <ModName>BetterDeepMiner</ModName> <!--- The Mods Name got from the About.xml in the mod folder --->
+    <WorkshopId>3021383272</WorkshopId> <!--- The Mods WorkShop Id got from the About.xml in the mod folder, if it has no id it is 0 --->
+    <IsEnabled>true</IsEnabled> <!--- If mod is enabled in the workshop menu --->
+    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\BetterDeepMiner</ModPath> <!--- The Mods ModPath the path the mod is --->
   </Mod>
 </BepinExMods>
 ```
