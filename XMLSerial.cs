@@ -7,7 +7,6 @@ namespace BepInEx.StationeerModLoader
 {
     public static class XmlSerialization
     {
-        // Token: 0x06005BF1 RID: 23537 RVA: 0x001CDA14 File Offset: 0x001CBC14
         public static T LoadOrCreateNew<T>(string path, Func<T> onNewCreated) where T : class
         {
             T t;
@@ -28,7 +27,6 @@ namespace BepInEx.StationeerModLoader
             return t;
         }
 
-        // Token: 0x06005BF2 RID: 23538 RVA: 0x001CDA60 File Offset: 0x001CBC60
         public static T LoadOrNull<T>(string path)
         {
             if (!File.Exists(path))
@@ -38,13 +36,11 @@ namespace BepInEx.StationeerModLoader
             return XmlSerialization.Deserialize<T>(path, "");
         }
 
-        // Token: 0x06005BF3 RID: 23539 RVA: 0x001CDA8A File Offset: 0x001CBC8A
         public static bool SaveXml<T>(this T savable, string path) where T : class
         {
             return XmlSerialization.Serialize<T>(savable, path);
         }
 
-        // Token: 0x06005BF4 RID: 23540 RVA: 0x001CDA94 File Offset: 0x001CBC94
         public static bool Serialize<T>(T obj, string path)
         {
             bool result;
@@ -65,7 +61,6 @@ namespace BepInEx.StationeerModLoader
             return result;
         }
 
-        // Token: 0x06005BF5 RID: 23541 RVA: 0x001CDAFC File Offset: 0x001CBCFC
         public static bool Serialization(XmlSerializer xmlSerializer, object obj, string path)
         {
             if (xmlSerializer == null || obj == null)
@@ -89,7 +84,6 @@ namespace BepInEx.StationeerModLoader
             return result;
         }
 
-        // Token: 0x06005BF6 RID: 23542 RVA: 0x001CDB8C File Offset: 0x001CBD8C
         public static bool Serialization(XmlSerializer xmlSerializer, StreamWriter streamWriter, object obj, string path = "")
         {
             if (streamWriter == null || obj == null)
@@ -118,7 +112,6 @@ namespace BepInEx.StationeerModLoader
             return result;
         }
 
-        // Token: 0x06005BF7 RID: 23543 RVA: 0x001CDBFC File Offset: 0x001CBDFC
         public static object Deserialize(XmlSerializer xmlSerializer, string path)
         {
             if (xmlSerializer == null || !File.Exists(path))
@@ -142,7 +135,6 @@ namespace BepInEx.StationeerModLoader
             return result;
         }
 
-        // Token: 0x06005BF8 RID: 23544 RVA: 0x001CDCA0 File Offset: 0x001CBEA0
         public static T Deserialize<T>(string path, string root = "")
         {
             T result;
@@ -169,7 +161,8 @@ namespace BepInEx.StationeerModLoader
         {
             CheckCharacters = false
         };
-        // Token: 0x06005BF9 RID: 23545 RVA: 0x001CDD44 File Offset: 0x001CBF44
+
+
         public static object Deserialize(XmlSerializer xmlSerializer, StreamReader streamReader, string path = "")
         {
             if (xmlSerializer == null || streamReader == null)

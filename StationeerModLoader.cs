@@ -27,7 +27,7 @@ namespace BepInEx.StationeerModLoader
 
         public static void Patch(AssemblyDefinition ass)
         {
-            // Not used, exists so that this works as preloader patch
+            // Not used, exists so that this works as preloader patcher
         }
     }
 }

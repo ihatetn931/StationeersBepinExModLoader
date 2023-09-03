@@ -44,7 +44,7 @@ namespace BepInEx.StationeerModLoader
                     return;
                 }
             }
-            // Also resolve assemblies like bepin does
+            // Also resolve assemblies like bepinEx does
             AppDomain.CurrentDomain.AssemblyResolve += ResolveModDirectories;
         }
 

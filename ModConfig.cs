@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 
 namespace BepInEx.StationeerModLoader
 {
+    //so I can read the Game ModConfig
     [XmlRoot(ElementName = "ModConfig")]
     public class ModConfig
     {

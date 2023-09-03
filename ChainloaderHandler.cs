@@ -41,7 +41,7 @@ namespace BepInEx.StationeerModLoader
         {
             if (directory != Paths.PluginPath)
                 return;
-            // prevent saving cache in order to not overwrite it when loading all mods 
+            // prevent saving cache in order to not overwrite it when loading all the mods 
             shouldSaveCache = false;
         }
 

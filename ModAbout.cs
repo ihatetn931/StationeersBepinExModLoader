@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 
 namespace BepInEx.StationeerModLoader
 {
+    //So i can read a mods About.xml
     [XmlRoot("ModMetadata")]
     public class ModAbout
     {

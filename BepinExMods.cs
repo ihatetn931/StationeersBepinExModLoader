@@ -1,6 +1,7 @@
 ﻿using System.Xml.Serialization;
 using System.Collections.Generic;
 
+//The config file created by this mod loader
 namespace BepInEx.StationeerModLoader
 {
     [XmlRoot(ElementName = "Mod")]

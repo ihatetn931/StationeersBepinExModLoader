@@ -24,14 +24,14 @@ namespace BepInEx.StationeerModLoader
             }
         }
 
-        public static void WriteToXmlFile<T>(string filePath, T objectToWrite,XmlSerializerNamespaces nameSpace, bool append = false) where T : new()
+        public static void WriteToXmlFile<T>(string filePath, T objectToWrite, XmlSerializerNamespaces nameSpace, bool append = false) where T : new()
         {
             TextWriter textWriter = null;
             try
             {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
                 textWriter = new StreamWriter(filePath, append);
-                xmlSerializer.Serialize(textWriter, objectToWrite,nameSpace);
+                xmlSerializer.Serialize(textWriter, objectToWrite, nameSpace);
             }
             finally
             {
@@ -69,7 +69,7 @@ namespace BepInEx.StationeerModLoader
             if (File.Exists(ConfigFile.ModConfigPath))
             {
                 moddata.Clear();
-                var test = RemoveNonBepinExMods( XmlSerialization.Deserialize<ModConfig>(ModConfigPath, "ModConfig"));
+                var test = RemoveNonBepinExMods(XmlSerialization.Deserialize<ModConfig>(ModConfigPath, "ModConfig"));
                 foreach (var t in test.Mods)
                     if (!t.IsCore)
                         moddata.Add(t);
@@ -160,7 +160,7 @@ namespace BepInEx.StationeerModLoader
             }
             return true;
         }
-
+        //Removes all mods from the list if they're not BepinExMods
         public static ModConfig RemoveNonBepinExMods(ModConfig mconfig)
         {
             if (mconfig != null)
@@ -178,16 +178,16 @@ namespace BepInEx.StationeerModLoader
             }
             return mconfig;
         }
-
-        public static ModAbout GetModAbout(string modpath , string aboutpath)
+        //Read The Mod About.xml
+        public static ModAbout GetModAbout(string modpath, string aboutpath)
         {
-            ModAbout modAbout = ConfigFile.ReadFromXmlFile<ModAbout>(Path.Combine(modpath,aboutpath));
+            ModAbout modAbout = ConfigFile.ReadFromXmlFile<ModAbout>(Path.Combine(modpath, aboutpath));
             return modAbout;
         }
-
+        //Create The ConfigFile
         public static bool AttemptToCreate()
         {
-;            if (moddata != null)
+            if (moddata != null)
             {
                 XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                 ns.Add("", "");
@@ -206,7 +206,7 @@ namespace BepInEx.StationeerModLoader
                     {
                         Mod = modsloaded
                     };
-                    WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod,ns, false);
+                    WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod, ns, false);
                 }
             }
             return true;
