@@ -23,7 +23,7 @@ This Patcher is a modified version of https://github.com/BepInEx/BepInEx.MultiFo
 
 The Config
 ModLoaderSettings.xml
-<code> 
+```
 <BepinExMods>
   <Mod LoadWithStationeersMod="false">
     <ModName>BetterDeepMiner</ModName>
@@ -56,7 +56,7 @@ ModLoaderSettings.xml
     <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ConfigurationManager</ModPath>
   </Mod>
 </BepinExMods>
-</code>
+```
 
 ## Plans
 1: Make it so the list in the WorkShop menu also sets the load order for mods.
