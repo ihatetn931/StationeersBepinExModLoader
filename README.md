@@ -23,7 +23,7 @@ This Patcher is a modified version of https://github.com/BepInEx/BepInEx.MultiFo
 
 The Config
 ModLoaderSettings.xml
-```
+```xml
 <BepinExMods>
   <Mod LoadWithStationeersMod="false">
     <ModName>BetterDeepMiner</ModName>
