@@ -73,16 +73,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChainloaderHandler.cs" />
-    <Compile Include="PathJson.cs" />
-    <Compile Include="StationeersBepinExModLoader.cs" />
+    <Compile Include="BepinExMods.cs" />
+    <Compile Include="ModAbout.cs" />
+    <Compile Include="ModConfig.cs" />
+    <Compile Include="StationeerModLoader.cs" />
     <Compile Include="ModLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XMLHandling.cs" />
+    <Compile Include="XMLSerial.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)\bin\Debug\StationeersBepinExModLoader.dll" "$(CommonDir)Stationeers\BepInEx\patchers"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)\bin\Release\StationeersBepinExModLoader.dll" "$(CommonDir)Stationeers\BepInEx\patchers"</PostBuildEvent>
   </PropertyGroup>
 </Project>

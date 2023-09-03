@@ -2,6 +2,11 @@
 # StationeersBepinExModLoader
 
 For This Patcher to work you Need BepinEx https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21
+You also need to Open up the WorkShop Menu Atlease once so it creates a modconfig.xml
+
+<img src="https://github.com/ihatetn931/StationeersBepinExModLoader/assets/2037352/52c0f1c0-4e46-4412-9b8d-b08cf65e84cc" width="150" height="100">
+
+<img src="https://github.com/ihatetn931/StationeersBepinExModLoader/assets/2037352/92c7560d-9f76-4535-ba06-7461264cabe9" width="200" height="300">
 
 You also need to Open up the WorkShop Menu Atlease once so it creates a modconfig.xml
 
@@ -26,3 +31,5 @@ This Patcher is a modified version of https://github.com/BepInEx/BepInEx.MultiFo
 
 ## Plans
 1: Make it so the list in the WorkShop menu also sets the load order for mods.
+ 
+3: I might add where you can set each mod if it will load with stationeersmods or not so you can pick and choose which mod StationeersMods load and which mods my ModLoader will load
