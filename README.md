@@ -27,10 +27,10 @@ This is a example of what the ModLoader Creates for the mods it detects
 ```xml
 <BepinExMods>
   <Mod LoadWithStationeersMod="false"> <!--- Change this to true if you want StationeersMods to load this Mod --->
-    <ModName>BetterDeepMiner</ModName> <!--- The Mods Name got from the About.xml in the mod folder NOT CHANGEABLE --->
-    <WorkshopId>3021383272</WorkshopId> <!--- The Mods WorkShop Id got from the About.xml in the mod folder, if it has no id it is 0 NOT CHANGEABLE --->
+    <ModName>Deadly Toxins [StationeersMods]</ModName> <!--- The Mods Name got from the About.xml in the mod folder NOT CHANGEABLE --->
+    <WorkshopId>3004378085</WorkshopId> <!--- The Mods WorkShop Id got from the About.xml in the mod folder, if it has no id it is 0 NOT CHANGEABLE --->
     <IsEnabled>true</IsEnabled> <!--- If mod is enabled in the workshop menu NOT CHANGEABLE --->
-    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\BetterDeepMiner</ModPath> <!--- The Mods ModPath the path the mod is NOT CHANGEABLE --->
+    <ModPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\544550\3004378085</ModPath> <!--- The Mods ModPath the path the mod is NOT CHANGEABLE --->
   </Mod>
 </BepinExMods>
 ```
