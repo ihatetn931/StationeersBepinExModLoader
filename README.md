@@ -21,6 +21,42 @@ If you also use StationeersMod https://github.com/jixxed/StationeersMods you can
 
 This Patcher is a modified version of https://github.com/BepInEx/BepInEx.MultiFolderLoader to work with Stationeers
 
+The Config
+ModLoaderSettings.xml
+<code> 
+<BepinExMods>
+  <Mod LoadWithStationeersMod="false">
+    <ModName>BetterDeepMiner</ModName>
+    <WorkshopId>3021383272</WorkshopId>
+    <IsEnabled>true</IsEnabled>
+    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\BetterDeepMiner</ModPath>
+  </Mod>
+  <Mod LoadWithStationeersMod="false">
+    <ModName>ColoredGasses</ModName>
+    <WorkshopId>3021353906</WorkshopId>
+    <IsEnabled>true</IsEnabled>
+    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ColoredGasses</ModPath>
+  </Mod>
+  <Mod LoadWithStationeersMod="false">
+    <ModName>SeasonsAndWeather</ModName>
+    <WorkshopId>2948870051</WorkshopId>
+    <IsEnabled>true</IsEnabled>
+    <ModPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\544550\2948870051</ModPath>
+  </Mod>
+  <Mod LoadWithStationeersMod="false">
+    <ModName>Deadly Toxins [StationeersMods]</ModName>
+    <WorkshopId>3004378085</WorkshopId>
+    <IsEnabled>true</IsEnabled>
+    <ModPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\544550\3004378085</ModPath>
+  </Mod>
+  <Mod LoadWithStationeersMod="false">
+    <ModName>ConfigurationManager</ModName>
+    <WorkshopId>3017371375</WorkshopId>
+    <IsEnabled>true</IsEnabled>
+    <ModPath>C:\Users\Jerem\OneDrive\Documents\My Games\Stationeers\mods\ConfigurationManager</ModPath>
+  </Mod>
+</BepinExMods>
+</code>
 
 ## Plans
 1: Make it so the list in the WorkShop menu also sets the load order for mods.
