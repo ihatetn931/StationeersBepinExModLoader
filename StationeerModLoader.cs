@@ -1,7 +1,5 @@
 ﻿using BepInEx.Logging;
-using HarmonyLib;
 using Mono.Cecil;
-using System;
 using System.Collections.Generic;
 
 namespace BepInEx.StationeerModLoader
@@ -9,7 +7,7 @@ namespace BepInEx.StationeerModLoader
     public class StationeerModLoader
     {
         public static readonly ManualLogSource Logger = Logging.Logger.CreateLogSource(nameof(StationeerModLoader));
-        public const string Version = "1.1.1";
+        public const string Version = "1.2.0";
         public const string WebUrl = "https://github.com/ihatetn931/StationeersBepinExModLoader";
         public const string PatcherName = "BepinEx.StationeersModLoader";
 
@@ -18,7 +16,8 @@ namespace BepInEx.StationeerModLoader
         //preloader patcher Initialize
         public static void Initialize()
         {
-            ModLoader.Init();
+            if(ConfigFile.AttemptToLoadModConfig())
+                ModLoader.Init();
         }
         //preloader patcher Finish
         public static void Finish()
