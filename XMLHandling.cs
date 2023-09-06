@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
+using System.Threading.Tasks;
 
 namespace BepInEx.StationeerModLoader
 {
@@ -63,9 +64,14 @@ namespace BepInEx.StationeerModLoader
             return result;
         }
 
+        public static void MovePlugin()
+        {
+
+        }
 
         public static bool AttemptToLoadModConfig()
         {
+            //MovePlugin();
             if (File.Exists(ConfigFile.ModConfigPath))
             {
                 moddata.Clear();
@@ -129,7 +135,8 @@ namespace BepInEx.StationeerModLoader
                             {
                                 Mod = modsloaded
                             };
-                            StationeerModLoader.Logger.LogInfo($"Added Mod {modadded.ModName} from ModLoaderSettings.xml");
+                            if(!modsloaded.Contains(modadded))
+                                StationeerModLoader.Logger.LogInfo($"Added Mod {modadded.ModName} from ModLoaderSettings.xml");
                             ModLoader.UpdateFiles(moddata, modsloaded);
                             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                             ns.Add("", "");

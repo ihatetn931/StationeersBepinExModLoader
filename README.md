@@ -21,7 +21,12 @@ When it loads for the first time it creates a ModLoaderSettings.xml file in the 
 
 If you also use StationeersMod https://github.com/jixxed/StationeersMods you can change LoadWithStationeersMod to true in ModLoaderSettings.xml and the Mod will be loaded by stationeers mods and not this modloader
 
-### The Config
+### Recomended Plugins
+This plugin will update the modconfig.xml on game load instead of when you open the workshop menu this is mostly so mods that you just added from the workshop will load the first time instead of having to go to the workshop 
+menu<br>
+https://github.com/ihatetn931/WorkShopPatches/releases
+
+#### The Config
 ModLoaderSettings.xml
 This is a example of what the ModLoader Creates for the mods it detects
 ```xml
@@ -35,7 +40,7 @@ This is a example of what the ModLoader Creates for the mods it detects
 </BepinExMods>
 ```
 
-#### Plans
+##### Plans
 1: Make it so the list in the WorkShop menu also sets the load order for mods.
 
 ##### Info
