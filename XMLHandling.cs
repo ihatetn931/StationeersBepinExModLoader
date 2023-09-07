@@ -64,19 +64,14 @@ namespace BepInEx.StationeerModLoader
             return result;
         }
 
-        public static void MovePlugin()
-        {
-
-        }
-
         public static bool AttemptToLoadModConfig()
         {
-            //MovePlugin();
             if (File.Exists(ConfigFile.ModConfigPath))
             {
                 moddata.Clear();
-                var test = RemoveNonBepinExMods(XmlSerialization.Deserialize<ModConfig>(ModConfigPath, "ModConfig"));
-                foreach (var t in test.Mods)
+                //var modConfig = ConfigFile.ReadFromXmlFile<ModConfig>(ModConfigPath);
+                var modConfig = RemoveNonBepinExMods(XmlSerialization.Deserialize<ModConfig>(ModConfigPath, "ModConfig"));
+                foreach (var t in modConfig.Mods)
                     if (!t.IsCore)
                         moddata.Add(t);
             }
@@ -112,7 +107,8 @@ namespace BepInEx.StationeerModLoader
             if (File.Exists(ConfigFile.PathsConfigPath))
             {
                 modsloaded.Clear();
-                var modData = XmlSerialization.Deserialize<BepinExMods>(PathsConfigPath, "BepinExMods");
+                //var modData = XmlSerialization.Deserialize<BepinExMods>(PathsConfigPath, "BepinExMods");
+                BepinExMods modData = ConfigFile.ReadFromXmlFile<BepinExMods>(PathsConfigPath);
                 if (CheckForRemovedMods(modData))
                 {
                     foreach (var data in moddata)
@@ -138,6 +134,7 @@ namespace BepInEx.StationeerModLoader
                             if(!modsloaded.Contains(modadded))
                                 StationeerModLoader.Logger.LogInfo($"Added Mod {modadded.ModName} from ModLoaderSettings.xml");
                             ModLoader.UpdateFiles(moddata, modsloaded);
+                            //removing any xml namespaces that gets added cause for some people it may confuse them
                             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                             ns.Add("", "");
                             WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod, ns, false);
@@ -158,6 +155,7 @@ namespace BepInEx.StationeerModLoader
                             {
                                 Mod = modsloaded
                             };
+                            //removing any xml namespaces that gets added cause for some people it may confuse them
                             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                             ns.Add("", "");
                             WriteToXmlFile<BepinExMods>(PathsConfigPath, bepinmod, ns, false);
@@ -167,6 +165,7 @@ namespace BepInEx.StationeerModLoader
             }
             return true;
         }
+
         //Removes all mods from the list if they're not BepinExMods
         public static ModConfig RemoveNonBepinExMods(ModConfig mconfig)
         {
@@ -176,26 +175,33 @@ namespace BepInEx.StationeerModLoader
                 {
                     if (modData != null)
                     {
-                        if (!modData.IsCore && File.Exists(modData.LocalPath + "\\About\\stationeersmods"))
+                        if (!modData.IsCore)
                         {
-                            mconfig.Mods.Remove(modData);
+                            var checkfordll = Directory.GetFiles(modData.LocalPath, "*.dll",SearchOption.AllDirectories).Length;
+                            if (checkfordll == 0)
+                                mconfig.Mods.Remove(modData);
+                            if (File.Exists(modData.LocalPath + "\\About\\stationeersmods"))
+                                mconfig.Mods.Remove(modData);
                         }
                     }
                 }
             }
             return mconfig;
         }
+
         //Read The Mod About.xml
         public static ModAbout GetModAbout(string modpath, string aboutpath)
         {
             ModAbout modAbout = ConfigFile.ReadFromXmlFile<ModAbout>(Path.Combine(modpath, aboutpath));
             return modAbout;
         }
+
         //Create The ConfigFile
         public static bool AttemptToCreate()
         {
             if (moddata != null)
             {
+                //removing any xml namespaces that gets added cause for some people it may confuse them
                 XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                 ns.Add("", "");
                 foreach (var data in moddata)

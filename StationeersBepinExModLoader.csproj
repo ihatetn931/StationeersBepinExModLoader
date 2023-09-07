@@ -38,9 +38,6 @@
     <Reference Include="0Harmony20">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\BepInEx\core\0Harmony20.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\rocketstation_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll</HintPath>
-    </Reference>
     <Reference Include="BepInEx">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -50,9 +47,6 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Mono.Cecil">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\BepInEx\core\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="StationeersMods">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Stationeers\BepInEx\plugins\StationeersMods\StationeersMods.dll</HintPath>
