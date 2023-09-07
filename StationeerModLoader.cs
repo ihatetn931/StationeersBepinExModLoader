@@ -7,7 +7,7 @@ namespace BepInEx.StationeerModLoader
     public class StationeerModLoader
     {
         public static readonly ManualLogSource Logger = Logging.Logger.CreateLogSource(nameof(StationeerModLoader));
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.2";
         public const string WebUrl = "https://github.com/ihatetn931/StationeersBepinExModLoader";
         public const string PatcherName = "BepinEx.StationeersModLoader";
 
